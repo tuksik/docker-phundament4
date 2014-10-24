@@ -24,6 +24,5 @@ RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta
     
 # /!\ development setting
 ###COPY ./ /app/
-
 RUN ln -s /app/backend/web /app/frontend/web/backend
     
