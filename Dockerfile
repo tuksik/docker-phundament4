@@ -35,7 +35,9 @@ ONBUILD ADD . /app
 # Initialize application 
 ONBUILD RUN /app/init --env=Dotenv --overwrite=n
 ONBUILD RUN /usr/local/bin/composer install --prefer-dist
-ONBUILD RUN ["/app/yii","migrate","--interactive=0"]
+
+#TODO: ENV var for database IP not available in build process, execute command manually with `fig run backend ...`
+#ONBUILD RUN ["/app/yii","migrate","--interactive=0"]
 
 #TODO: obsolete with fig?
 # /!\ development settings:
