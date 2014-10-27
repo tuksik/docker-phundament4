@@ -21,14 +21,18 @@ RUN apt-get update && \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+# Download extensions to image, fill composer cache
+RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app-dist
 
 WORKDIR /app
 
 ONBUILD ADD . /app
-ONBUILD RUN /usr/local/bin/composer create-project --prefer-dist
 ONBUILD RUN /app/init --env=Dotenv --overwrite=n
+ONBUILD RUN /usr/local/bin/composer install --prefer-dist
+ONBUILD RUN /app/yii app/migrate --interactive=0
 # /!\ development settings:
 ONBUILD RUN ln -s /app/backend/web /app/frontend/web/backend
 
-ONBUILD EXPOSE 8000
-ONBUILD CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
+#TODO: obsolete with fig?
+#ONBUILD EXPOSE 8000
+#ONBUILD CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
