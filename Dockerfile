@@ -23,6 +23,8 @@ RUN apt-get update && \
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+ADD ./container-files/ /
+
 # Install global asset plugin (Yii 2.0 requirement)
 RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 
