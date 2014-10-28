@@ -28,8 +28,8 @@ ADD ./container-files/ /
 # Install global asset plugin (Yii 2.0 requirement)
 RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 
-# Download Phundament 4 extensions to image and fill composer cache
-RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app-dist
+# Download Phundament 4 and extensions
+RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app
 
 WORKDIR /app
 ONBUILD ADD . /app
