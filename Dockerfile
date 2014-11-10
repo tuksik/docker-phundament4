@@ -1,3 +1,8 @@
+# Docker container for Phundament 4 Applications
+# ----------------------------------------------
+# See https://github.com/phundament/app/blob/master/docs/51-fig.md for instructions, 
+# how to use this image with phundament/app.
+
 FROM debian:wheezy
 
 MAINTAINER Tobias Munk <tobias@diemeisterei.de>
@@ -23,8 +28,6 @@ RUN apt-get update && \
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-ADD ./container-files/ /
-
 # Install global asset plugin (Yii 2.0 requirement)
 RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 
@@ -38,11 +41,7 @@ ONBUILD ADD . /app
 ONBUILD RUN /app/init --env=Dotenv --overwrite=n
 ONBUILD RUN /usr/local/bin/composer install --prefer-dist
 
-#TODO: ENV var for database IP not available in build process, execute command manually with `fig run backend ...`
-#ONBUILD RUN ["/app/yii","migrate","--interactive=0"]
-
-#TODO: obsolete with fig?
-# /!\ development settings:
+# /!\ development settings /!\
 #ONBUILD RUN ln -s /app/backend/web /app/frontend/web/backend
 #ONBUILD EXPOSE 8000
 #ONBUILD CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
