@@ -1,4 +1,4 @@
 Phundament 4 Docker
 ===================
 
-WIP - 0.0.3
+Version 0.0.4
