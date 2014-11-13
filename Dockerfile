@@ -38,7 +38,6 @@ WORKDIR /app
 ONBUILD ADD . /app
 
 # Initialize application 
-ONBUILD RUN /app/init --env=Dotenv --overwrite=n
 ONBUILD RUN /usr/local/bin/composer install --prefer-dist
 
 # /!\ development settings /!\
