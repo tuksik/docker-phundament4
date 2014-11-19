@@ -19,17 +19,17 @@ RUN apt-get update && \
         php5-curl \
         php5-cli \
         php5-imagick \
+        php5-gd \
         php5-intl \
         php5-mcrypt \
         php5-mysql \
+        php5-xsl \
         php-apc && \
     rm -rf /var/lib/apt/lists/*
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install global asset plugin (Yii 2.0 requirement)
-RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+# Install composer && global asset plugin (Yii 2.0 requirement)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 
 # Download Phundament 4 and extensions
 RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app
