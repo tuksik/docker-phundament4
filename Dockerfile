@@ -40,6 +40,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Download Phundament 4 and extensions
 RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app
 
+# Add application
 WORKDIR /app
 ONBUILD ADD . /app
 
@@ -48,5 +49,6 @@ ONBUILD RUN /usr/local/bin/composer install --prefer-dist
 
 # /!\ development settings /!\
 #ONBUILD RUN ln -s /app/backend/web /app/frontend/web/backend
-#ONBUILD EXPOSE 8000
-#ONBUILD CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
+
+EXPOSE 8000
+CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
