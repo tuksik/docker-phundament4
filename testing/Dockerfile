@@ -1,4 +1,4 @@
-FROM phundament/standard
+FROM phundament/docker:standard
 
 # Install packages required for testing
 RUN /usr/local/bin/composer global require  --prefer-dist \
