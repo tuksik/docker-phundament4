@@ -24,7 +24,6 @@ RUN apt-get update && \
         curl \
         php5-curl \
         php5-cli \
-        php5-imagick \
         php5-gd \
         php5-intl \
         php5-mcrypt \
@@ -38,14 +37,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 
 # Download Phundament 4 and extensions
-RUN /usr/local/bin/composer create-project --prefer-dist --stability=dev phundament/app /app
+RUN /usr/local/bin/composer create-project --prefer-dist --no-dev --stability=dev phundament/app /app
 
 # Initialize application
 WORKDIR /app
-ONBUILD ADD . /app
-ONBUILD RUN /usr/local/bin/composer install --prefer-dist
 
-# /!\ development settings /!\
+# /!\ convenience settings, you may run the backend in a separate container /!\
 RUN ln -s /app/backend/web /app/frontend/web/backend
 RUN cp platforms/fig/.env .env
 

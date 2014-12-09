@@ -1,6 +1,13 @@
 Docker Container for Phundament 4
 =================================
 
+---
+
+**NOTE! The repo is undergoing a refactoring as you read this message.
+
+---
+
+
 **12factor PHP Application Template for Yii 2.0**
 
 *Container Version 0.0.6*
@@ -13,7 +20,8 @@ Available on [DockerHub](https://registry.hub.docker.com/u/phundament/docker/).
 Setup
 -----
 
-Create a MySQL container...
+Create a MySQL container and a reverse proxy
+...
 
 ```
 docker run -d \
@@ -23,11 +31,7 @@ docker run -d \
     -e MYSQL_USER=phundament \
     -e MYSQL_PASSWORD=changeme \
     mysql
-```
 
-and a reverse proxy
-
-```
 docker run -d \
     --name rproxy -p 80:80 \
     -v /var/run/docker.sock:/tmp/docker.sock \
@@ -38,26 +42,20 @@ Run the application in a PHP container...
 
 ```
 docker run \
-    --name=myapp \
+    --name=phundament \
     --link mysql1:DB \
     -p 8000 \
     -e HOME=/root \
-    -e VIRTUAL_HOST=myapp.127.0.0.1.xip.io,myapp.192.168.59.103.xip.io \
+    -e VIRTUAL_HOST=phundament.127.0.0.1.xip.io,phundament.192.168.59.103.xip.io \
     phundament/docker
 ```
 
-> Check your port with `docker ps` or add a port mapping `-p 8000:8000`
-
-Optional(*)
-
-```
-docker exec myapp composer install
-```
+> Check the assigned ports with `docker ps` or add a port mapping `-p 8000:8000`
 
 Setup database
 
 ```
-docker exec myapp ./yii app/setup --interactive=0
+docker exec phundament ./yii app/setup --interactive=0
 ```
 
 Usage
@@ -81,6 +79,61 @@ Access the applications through wildcard DNS and virtual hosts...
 ```
 docker start myapp
 ```
+
+
+
+Application Development
+-----------------------
+
+> Note: You 
+
+Getting the source code from the image by mounting a `myapp` directory into the container and copying the app into it...
+
+    export MYAPP=myapp
+
+    docker run \
+        -v `pwd`/$MYAPP:/app-install \
+        -e HOME=/root \
+        phundament/docker \
+        cp -r /app/. /app-install && echo "Application created in $MYAPP"
+    
+    cd $MYAPP
+
+Setup application...
+
+    cp ./platforms/fig/.env .
+    echo "FROM phundament/docker" >> Dockerfile
+
+Build an run the container (link a MySQL instance, see above)... 
+
+```
+docker build -t $MYAPP .
+
+docker run \
+    --detach=true \
+    --name=$MYAPP \
+    --link mysql1:DB \
+    -p 8000 \
+    -e HOME=/root \
+    -e VIRTUAL_HOST=$MYAPP.127.0.0.1.xip.io,$MYAPP.192.168.59.103.xip.io \
+    $MYAPP
+```
+
+Check if it is up with `docker ps`, your output should look similar to:
+
+```
+Kraftbuch:TESTING tobias$ docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+c197783f13b5        myapp:latest        "php -S 0.0.0.0:8000   8 seconds ago       Up 7 seconds        0.0.0.0:49165->8000/tcp   myapp
+```
+
+Setup the database...
+
+```
+docker exec $MYAPP ./yii app/setup --interactive=0
+```
+
+Access the application, eg. under `http://192.168.59.103:49165` or via the reverse proxy. 
 
 ---
 
