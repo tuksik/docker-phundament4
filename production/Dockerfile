@@ -54,3 +54,9 @@ RUN ln -s /app/backend/web /app/frontend/web/backend && \
 # Start application
 CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
 EXPOSE 8000
+
+
+# Note! To ensure a minimum of additional data layers for the containers in __your__ application,
+# you should add the `vendor` folder to `.dockerignore` and add the following line to the `Dockerfile`:
+#
+# RUN /usr/local/bin/composer install --prefer-dist

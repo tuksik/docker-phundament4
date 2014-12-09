@@ -1,18 +1,19 @@
 Docker Container for Phundament 4
 =================================
 
----
-
-**NOTE! The repo is undergoing a refactoring as you read this message.
-
----
-
-
 **12factor PHP Application Template for Yii 2.0**
 
 *Container Version 0.1.0-dev*
 
-PHP-Development environment based on Debian Wheezy. 
+Yii 2 Application environment based on Debian Wheezy.
+
+
+Tags
+----
+
+- `docker/phundament:production` minimal installation without development pacakges
+- `docker/phundament` standard `:development` installation with development pacakges
+- `docker/phundament:testing` testing installation with additional pacakges
 
 Available on [DockerHub](https://registry.hub.docker.com/u/phundament/docker/).
 
@@ -20,7 +21,7 @@ Available on [DockerHub](https://registry.hub.docker.com/u/phundament/docker/).
 Setup
 -----
 
-Create a MySQL container and a reverse proxy
+Create a MySQL container for the application data and a reverse proxy for easy access...
 ...
 
 ```
@@ -42,6 +43,7 @@ Run the application in a PHP container...
 
 ```
 docker run \
+    -d
     --name=phundament \
     --link mysql1:DB \
     -p 8000 \
@@ -50,13 +52,21 @@ docker run \
     phundament/docker
 ```
 
-> Check the assigned ports with `docker ps` or add a port mapping `-p 8000:8000`
+> Check with `docker ps` which ports docker has mapped for the container or add a port mapping `-p 8000:8000` to your commmand.
 
-Setup database
+Setup database...
 
 ```
 docker exec phundament ./yii app/setup --interactive=0
 ```
+
+
+View logs of running application...
+
+```
+docker logs --follow myapp
+``` 
+
 
 Usage
 -----
@@ -74,10 +84,11 @@ Access the applications through wildcard DNS and virtual hosts...
 - [myapp.192.168.59.103.xip.io/backend](http://myapp.192.168.59.103.xip.io/backend) (OS X, Windows) 
 
 
-(Re)start stopped application...
+Start/stop application...
 
 ```
 docker start myapp
+docker stop myapp
 ```
 
 
