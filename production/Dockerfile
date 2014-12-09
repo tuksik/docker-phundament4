@@ -37,6 +37,8 @@ RUN apt-get update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
+ADD container-files/root/.composer/config.json /root/.composer/config.json
+
 # Install application template and packages
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 RUN /usr/local/bin/composer create-project --prefer-dist --no-dev --stability=dev phundament/app /app
@@ -46,8 +48,8 @@ WORKDIR /app
 ONBUILD ADD . /app
 
 # /!\ convenience settings, you may run the backend in a separate container /!\
-RUN ln -s /app/backend/web /app/frontend/web/backend
-RUN cp platforms/fig/.env .env
+RUN ln -s /app/backend/web /app/frontend/web/backend && \
+    cp platforms/fig/.env .env
 
 # Start application
 CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
