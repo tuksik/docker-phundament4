@@ -37,7 +37,7 @@ RUN apt-get update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
-ADD container-files/root/.composer/config.json /root/.composer/config.json
+ADD ../container-files/root/.composer/config.json /root/.composer/config.json
 
 # Install application template and packages
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache

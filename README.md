@@ -10,7 +10,7 @@ Docker Container for Phundament 4
 
 **12factor PHP Application Template for Yii 2.0**
 
-*Container Version 0.0.6*
+*Container Version 0.1.0-dev*
 
 PHP-Development environment based on Debian Wheezy. 
 
