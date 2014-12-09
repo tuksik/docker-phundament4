@@ -96,8 +96,6 @@ docker stop myapp
 Application Development
 -----------------------
 
-> Note: You 
-
 Getting the source code from the image by mounting a `myapp` directory into the container and copying the app into it...
 
     export MYAPP=myapp
