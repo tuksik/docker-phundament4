@@ -1,7 +1,7 @@
 # Docker container for Phundament 4 Applications
 # ----------------------------------------------
 
-FROM phundament/docker:minimal
+FROM phundament/docker:production
 
 # Add system packages
 RUN apt-get update && \
