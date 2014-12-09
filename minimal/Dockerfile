@@ -16,7 +16,7 @@ RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
 # we don't need and apt cache in a container
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
-# Install base packages
+# Install system base packages
 RUN apt-get update && \
     apt-get install -y \
         git \
@@ -30,21 +30,25 @@ RUN apt-get update && \
         php5-mysql \
         php5-xsl \
         php-apc && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install composer && global asset plugin (Yii 2.0 requirement)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
-# Download Phundament 4 and extensions
+# Install application template and packages
+# Phundament 4 and its extensions can be used directly from the image or serve as local cache
 RUN /usr/local/bin/composer create-project --prefer-dist --no-dev --stability=dev phundament/app /app
 
 # Initialize application
 WORKDIR /app
+ONBUILD ADD . /app
 
 # /!\ convenience settings, you may run the backend in a separate container /!\
 RUN ln -s /app/backend/web /app/frontend/web/backend
 RUN cp platforms/fig/.env .env
 
-EXPOSE 8000
+# Start application
 CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
+EXPOSE 8000
