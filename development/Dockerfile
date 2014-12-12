@@ -20,5 +20,5 @@ RUN /usr/local/bin/composer install --prefer-dist
 # to the `Dockerfile`, eg. after installing system packages:
 
 ## Install application packages on image build when used as a base-image
-#ONBUILD ADD . /app
+#ADD . /app
 #RUN /usr/local/bin/composer install --prefer-dist
