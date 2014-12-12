@@ -1,23 +1,24 @@
 # Docker container for Phundament 4 Applications
 # ----------------------------------------------
 
-FROM phundament/docker:production
+FROM phundament/app:production
 
 # Add system packages
+ENV IMAGE_DEVELOPMENT_APT_GET_DATE 2014-12-10-00-43-00
 RUN apt-get update && \
     apt-get install -y \
         php5-imagick \
         mysql-client && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install development packages
 RUN /usr/local/bin/composer install --prefer-dist
 
-# Install application packages on image build when used as a base-image
-ONBUILD ADD . /app
-
-
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,
-# you should add the `vendor` folder to `.dockerignore` and add the following line to the `Dockerfile`:
-#
-# RUN /usr/local/bin/composer install --prefer-dist
+# you should add the `vendor` folder to `.dockerignore` and add the following lines __uncommented__
+# to the `Dockerfile`, eg. after installing system packages:
+
+## Install application packages on image build when used as a base-image
+#ONBUILD ADD . /app
+#RUN /usr/local/bin/composer install --prefer-dist

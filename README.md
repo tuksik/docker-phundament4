@@ -144,6 +144,24 @@ docker exec $MYAPP ./yii app/setup --interactive=0
 
 Access the application, eg. under `http://192.168.59.103:49165` or via the reverse proxy. 
 
+
+Building the images
+-------------------
+
+Build in sequence, since they depend on each other...
+
+```
+docker build -t phundament/app:production production
+docker build -t phundament/app:development development
+docker build -t phundament/app:testing testing
+```
+
+Push to Docker Hub
+
+```
+#docker push phundament/app
+```
+
 ---
 
 
