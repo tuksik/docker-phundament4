@@ -24,6 +24,8 @@ RUN apt-get update && \
         git \
         mercurial \ 
         curl \
+        nginx \
+        php5-fpm \
         php5-curl \
         php5-cli \
         php5-gd \
@@ -37,27 +39,38 @@ RUN apt-get update && \
 
 # Initialize application
 WORKDIR /app
-ONBUILD ADD . /app
 ADD container-files/root/.composer/config.json /root/.composer/config.json
 
 # Install composer && global asset plugin (Yii 2.0 requirement)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+ENV COMPOSER_HOME /root
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.0.0-alpha9 && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
 # Install application template and packages
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
+ENV P4_INSTALL 1
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
 
-# convenience settings, link backend to frontend container and use dist .env file
-# Note: you may run the backend in a separate container /!\
-RUN ln -s /app/backend/web /app/frontend/web/backend && \
-    cp platforms/fig/.env .env
+# Configure nginx
+ADD container-files/etc/nginx/sites-available/default /etc/nginx/sites-available/default
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
+    echo "cgi.fix_pathinfo = 0;" >> /etc/php5/fpm/php.ini && \
+    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini && \
+    ln -sf /dev/stdout /var/log/nginx/error.log
 
 # Start application
-CMD ["php","-S","0.0.0.0:8000","-t","/app/frontend/web"]
-EXPOSE 8000
+ADD container-files/root/create-db.php /root/create-db.php
+ADD container-files/root/run.sh /root/run.sh
+RUN cp .env-dist .env && \
+    chmod 700 /root/run.sh
+CMD /root/run.sh
+EXPOSE 80
+
+
+# /!\ debug settings /!\
+#RUN echo "<?php phpinfo(); ?>" >> /app/backend/web/info.php
 
 
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,

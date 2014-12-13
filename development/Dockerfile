@@ -8,6 +8,7 @@ ENV IMAGE_DEVELOPMENT_APT_GET_DATE 2014-12-10-00-43-00
 RUN apt-get update && \
     apt-get install -y \
         php5-imagick \
+        php5-xdebug \
         mysql-client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -27,7 +27,8 @@ Create a MySQL container for the application data and a reverse proxy for easy a
 ```
 docker run -d \
     --name=mysql1  \
-    -e MYSQL_ROOT_PASSWORD=sssshhhhhh \
+    -p 3306 \
+    -e MYSQL_ROOT_PASSWORD=secretroot \
     -e MYSQL_DATABASE=p4 \
     -e MYSQL_USER=phundament \
     -e MYSQL_PASSWORD=changeme \
@@ -127,6 +128,26 @@ docker run \
     -e VIRTUAL_HOST=$MYAPP.127.0.0.1.xip.io,$MYAPP.192.168.59.103.xip.io \
     $MYAPP
 ```
+
+ 
+ docker -D build -t phundament/app:production production
+ docker -D build -t phundament/app:development development
+
+ docker -D run  --link mysql1:DB -p 80 -e VIRTUAL_HOST=prod.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=p4-5 \
+    -e APP_NAME=test_p4 test_phundament/app:production
+ 
+ 
+ docker -D run --link mysql1:DB -p 80 -p 81 -e VIRTUAL_HOST=prod10.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=prod10 \
+    -e YII_ENV=prod \
+    -e YII_DEBUG=0 \
+    -e APP_NAME=prod \
+    phundament/app:production
+ 
+ docker -D run  --link mysql1:DB -p 80 -e VIRTUAL_HOST=dev2.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=p4-6 \
+    -e APP_NAME=dev phundament/app:development
 
 Check if it is up with `docker ps`, your output should look similar to:
 
