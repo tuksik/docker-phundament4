@@ -129,27 +129,7 @@ docker run \
     $MYAPP
 ```
 
- 
- docker -D build -t phundament/app:production production
- docker -D build -t phundament/app:development development
-
- docker -D run  --link mysql1:DB -p 80 -e VIRTUAL_HOST=prod.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=p4-5 \
-    -e APP_NAME=test_p4 test_phundament/app:production
- 
- 
- docker -D run --link mysql1:DB -p 80 -p 81 -e VIRTUAL_HOST=prod10.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=prod10 \
-    -e YII_ENV=prod \
-    -e YII_DEBUG=0 \
-    -e APP_NAME=prod \
-    phundament/app:production
- 
- docker -D run  --link mysql1:DB -p 80 -e VIRTUAL_HOST=dev2.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=p4-6 \
-    -e APP_NAME=dev phundament/app:development
-
-Check if it is up with `docker ps`, your output should look similar to:
+ Check if it is up with `docker ps`, your output should look similar to:
 
 ```
 Kraftbuch:TESTING tobias$ docker ps
@@ -175,6 +155,32 @@ Build in sequence, since they depend on each other...
 docker build -t phundament/app:production production
 docker build -t phundament/app:development development
 docker build -t phundament/app:testing testing
+```
+
+Test images
+
+``` 
+docker -D run --link mysql1:DB \
+    -p 80 -p 81 \
+    -e VIRTUAL_HOST=prod11.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=prod11 \
+    -e YII_ENV=prod \
+    -e YII_DEBUG=0 \
+    -e APP_NAME=prod11 \
+    phundament/app:production
+
+docker -D run  --link mysql1:DB \
+    -p 80 -p 81 \
+    -e VIRTUAL_HOST=dev5.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=dev5 \
+    -e APP_NAME=dev4 phundament/app:development
+
+docker -D run  --link mysql1:DB \
+    -p 80 -p 81 \
+    -e VIRTUAL_HOST=test2.192.168.59.103.xip.io \
+    -e YII_ENV=test \
+    -e DB_ENV_MYSQL_DATABASE=test2 \
+    -e APP_NAME=test2 phundament/app:testing
 ```
 
 Push to Docker Hub
