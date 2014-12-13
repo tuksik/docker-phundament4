@@ -43,13 +43,15 @@ ADD container-files/root/.composer/config.json /root/.composer/config.json
 
 # Install composer && global asset plugin (Yii 2.0 requirement)
 ENV COMPOSER_HOME /root/.composer
+ENV PATH /root/.composer/bin:$PATH
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.0.0-alpha9 && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
 
 # Install application template and packages
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
-ENV P4_INSTALL 1
+ENV YII_ENV prod
+ENV YII_DEBUG 0
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
@@ -68,6 +70,7 @@ RUN cp .env-dist .env && \
     chmod 700 /root/run.sh
 CMD /root/run.sh
 EXPOSE 80
+EXPOSE 81
 
 
 # /!\ debug settings /!\

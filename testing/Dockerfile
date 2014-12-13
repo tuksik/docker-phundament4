@@ -1,5 +1,7 @@
 FROM phundament/app:development
 
+ENV YII_ENV test
+
 # Install packages required for testing
 RUN /usr/local/bin/composer global require  --prefer-dist \
         "codeception/codeception:2.0.*" "codeception/specify:*" "codeception/verify:*" && \

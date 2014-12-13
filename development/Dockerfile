@@ -14,6 +14,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install development packages
+ENV YII_ENV dev
+ENV YII_DEBUG true
 RUN /usr/local/bin/composer install --prefer-dist
 
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,
