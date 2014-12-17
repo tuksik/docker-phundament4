@@ -157,30 +157,39 @@ docker build -t phundament/app:development development
 docker build -t phundament/app:testing testing
 ```
 
-Test images
+Testing the images
+------------------
+
+Start MySQL container in advance (see above)...
+
+```
+docker start mysql1
+```
+
+Run app...
 
 ``` 
 docker -D run --link mysql1:DB \
     -p 80 -p 81 \
-    -e VIRTUAL_HOST=prod11.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=prod11 \
+    -e VIRTUAL_HOST=prod.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=prod \
     -e YII_ENV=prod \
     -e YII_DEBUG=0 \
-    -e APP_NAME=prod11 \
+    -e APP_NAME=production \
     phundament/app:production
 
 docker -D run  --link mysql1:DB \
     -p 80 -p 81 \
-    -e VIRTUAL_HOST=dev5.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=dev5 \
+    -e VIRTUAL_HOST=dev.192.168.59.103.xip.io \
+    -e DB_ENV_MYSQL_DATABASE=development \
     -e APP_NAME=dev4 phundament/app:development
 
 docker -D run  --link mysql1:DB \
     -p 80 -p 81 \
-    -e VIRTUAL_HOST=test2.192.168.59.103.xip.io \
+    -e VIRTUAL_HOST=test.192.168.59.103.xip.io \
     -e YII_ENV=test \
-    -e DB_ENV_MYSQL_DATABASE=test2 \
-    -e APP_NAME=test2 phundament/app:testing
+    -e DB_ENV_MYSQL_DATABASE=test \
+    -e APP_NAME=test phundament/app:testing
 ```
 
 Push to Docker Hub
