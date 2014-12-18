@@ -15,7 +15,7 @@ Tags
 - `docker/phundament` standard `:development` installation with development pacakges
 - `docker/phundament:testing` testing installation with additional pacakges
 
-Available on [DockerHub](https://registry.hub.docker.com/u/phundament/docker/).
+Available on [DockerHub](https://registry.hub.docker.com/u/phundament/app/).
 
 
 Setup
