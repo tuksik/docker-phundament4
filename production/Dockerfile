@@ -71,7 +71,6 @@ RUN cp .env-dist .env && \
     chmod 700 /root/run.sh
 CMD /root/run.sh
 EXPOSE 80
-EXPOSE 81
 
 
 # /!\ debug settings /!\
@@ -80,7 +79,7 @@ EXPOSE 81
 
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,
 # you should add the `vendor` folder to `.dockerignore` and add the following lines __uncommented__
-# to the `Dockerfile`, eg. after installing system packages:
+# to the `Dockerfile`, eg. after installing additional system packages:
 
 ## Install application packages on image build when used as a base-image
 #ADD . /app
