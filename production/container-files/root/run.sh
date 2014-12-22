@@ -6,7 +6,7 @@ function setEnvironmentVariable() {
             echo "Environment variable '$1' not set."
             return
     fi
-    echo "env[$1] = $2" >> /etc/php5/fpm/pool.d/www.conf
+    echo 'env[$1] = "$2"' >> /etc/php5/fpm/pool.d/www.conf
 }
 
 # Grep for variables that look like docker set them (_PORT_)
