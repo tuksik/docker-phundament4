@@ -11,11 +11,14 @@ RUN /usr/local/bin/composer global require  --prefer-dist \
 
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,
 # you should add the `vendor` folder to `.dockerignore` and add the following lines __uncommented__
-# to the `Dockerfile`, eg. after installing system packages:
+# to the `Dockerfile`, eg. after installing additional system packages:
 
 ## Install application packages on image build when used as a base-image
 #ADD ./composer.lock /app/composer.lock
 #ADD ./composer.json /app/composer.json
-#RUN /usr/local/bin/composer install --prefer-dist
+#RUN /usr/local/bin/composer install --prefer-dist && \
+#    /usr/local/bin/composer require  --prefer-dist --dev \
+            "yiisoft/yii2-coding-standards:2.*" "yiisoft/yii2-codeception:2.*" "yiisoft/yii2-faker:2.*"
+
 #ADD . /app
 
