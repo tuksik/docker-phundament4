@@ -18,7 +18,7 @@ RUN /usr/local/bin/composer global require  --prefer-dist \
 #ADD ./composer.json /app/composer.json
 #RUN /usr/local/bin/composer install --prefer-dist && \
 #    /usr/local/bin/composer require  --prefer-dist --dev \
-            "yiisoft/yii2-coding-standards:2.*" "yiisoft/yii2-codeception:2.*" "yiisoft/yii2-faker:2.*"
-
+#       "yiisoft/yii2-coding-standards:2.*" "yiisoft/yii2-codeception:2.*" "yiisoft/yii2-faker:2.*"
+#
 #ADD . /app
 
