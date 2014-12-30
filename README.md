@@ -110,10 +110,9 @@ Getting the source code from the image by mounting a `myapp` directory into the 
 
 Setup application...
 
-    cp ./platforms/fig/.env .
     echo "FROM phundament/docker" >> Dockerfile
 
-Build an run the container (link a MySQL instance, see above)... 
+Build an run the container with a linked MySQL instance (see above)... 
 
 ```
 docker build -t $MYAPP .
@@ -122,8 +121,8 @@ docker run \
     --detach=true \
     --name=$MYAPP \
     --link mysql1:DB \
-    -p 8000 \
-    -e HOME=/root \
+    -p 80 \
+    -e DB_ENV_MYSQL_DATABASE=$MYAPP \
     -e VIRTUAL_HOST=$MYAPP.127.0.0.1.xip.io,$MYAPP.192.168.59.103.xip.io \
     $MYAPP
 ```
@@ -142,8 +141,9 @@ Setup the database...
 docker exec $MYAPP ./yii app/setup --interactive=0
 ```
 
-Access the application, eg. under `http://192.168.59.103:49165` or via the reverse proxy. 
+Access the application, eg. under `http://192.168.59.103:49165` or via the reverse proxy `open http://$MYAPP.192.168.59.103.xip.io`. 
 
+> For more details about Phundament application development see also [phundament.com/docs](http://phundament.com/docs).
 
 Building the images
 -------------------
