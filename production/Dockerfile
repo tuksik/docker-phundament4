@@ -16,7 +16,7 @@ RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
 # we don't need and apt cache in a container
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
-# Install system base packages
+# Update and install system base packages
 ENV IMAGE_PRODUCTION_APT_GET_DATE 2014-12-10-00-36-00
 RUN apt-get update && \
     apt-get upgrade && \
