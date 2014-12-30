@@ -47,12 +47,11 @@ ENV PATH /root/.composer/bin:$PATH
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.0.0-alpha9 && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
-
 # Install application template and packages
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 ENV YII_ENV prod
 ENV YII_DEBUG 0
-ENV IMAGE_PRODUCTION_CREATE_PROJECT 2014-12-17-02-10-00
+ENV IMAGE_PRODUCTION_CREATE_PROJECT 2014-12-24-01-39-00
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
@@ -61,15 +60,16 @@ RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
 ADD container-files/etc/nginx/sites-available/default /etc/nginx/sites-available/default
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
     echo "cgi.fix_pathinfo = 0;" >> /etc/php5/fpm/php.ini && \
-    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini && \
-    ln -sf /dev/stdout /var/log/nginx/error.log
+    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini
+
 
 # Start application
 ADD container-files/root/create-db.php /root/create-db.php
 ADD container-files/root/run.sh /root/run.sh
 RUN cp .env-dist .env && \
     chmod 700 /root/run.sh
-CMD /root/run.sh
+
+CMD ["/root/run.sh"]
 EXPOSE 80
 
 
@@ -82,5 +82,7 @@ EXPOSE 80
 # to the `Dockerfile`, eg. after installing additional system packages:
 
 ## Install application packages on image build when used as a base-image
-#ADD . /app
+#ADD ./composer.lock /app/composer.lock
+#ADD ./composer.json /app/composer.json
 #RUN /usr/local/bin/composer install --prefer-dist
+#ADD . /app

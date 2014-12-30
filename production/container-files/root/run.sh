@@ -1,7 +1,6 @@
 #!/bin/bash
 
 function setEnvironmentVariable() {
-
     if [ -z "$2" ]; then
             echo "Environment variable '$1' not set."
             return
@@ -16,11 +15,26 @@ for _curVar in `env | awk -F = '{print $1}'`;do
     setEnvironmentVariable ${_curVar} ${!_curVar}
 done
 
-# create database in MySQL server
+# create database in MySQL server, if not exists
 /usr/bin/php -f /root/create-db.php
+
+# start PHP and nginx
+service php5-fpm start
+service nginx start &
+
+# prepare log output
+mkdir -p /app/runtime/logs /app/web/assets
+touch /var/log/nginx/access.log \
+      /var/log/nginx/error.log \
+      /app/runtime/logs/web.log \
+      /app/runtime/logs/console.log
+chmod -R 777 /app/runtime /app/web/assets
 
 # create schema
 ./yii app/setup --interactive=0
 
-# start PHP and nginx
-service php5-fpm start & /usr/sbin/nginx
+tail -F /var/log/nginx/error.log \
+     -F /var/log/nginx/access.log \
+     -F /app/runtime/logs/web.log \
+     -F -n 1000 /app/runtime/logs/console.log
+
