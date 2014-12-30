@@ -20,6 +20,14 @@ ENV YII_ENV dev
 ENV YII_DEBUG true
 RUN /usr/local/bin/composer install --prefer-dist
 
+# /!\ DEVELOPMENT ONLY SETTINGS /!\
+# Running PHP-FPM as root, required for volumes mounted from host
+RUN sed -i.bak 's/user = www-data/user = root/' /etc/php5/fpm/pool.d/www.conf && \
+    sed -i.bak 's/group = www-data/group = root/' /etc/php5/fpm/pool.d/www.conf && \
+    sed -i.bak 's/--fpm-config /-R --fpm-config /' /etc/init.d/php5-fpm
+# /!\ DEVELOPMENT ONLY SETTINGS /!\
+
+
 # Note! To ensure a minimum of additional data layers for the containers in __your__ application,
 # you should add the `vendor` folder to `.dockerignore` and add the following lines __uncommented__
 # to the `Dockerfile`, eg. after installing additional system packages:
