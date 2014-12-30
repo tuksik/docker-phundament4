@@ -12,7 +12,7 @@ Tags
 ----
 
 - `docker/phundament:production` minimal installation without development pacakges
-- `docker/phundament` standard `:development` installation with development pacakges
+- `docker/phundament:development`, `:latest` default installation with development pacakges
 - `docker/phundament:testing` testing installation with additional pacakges
 
 Available on [DockerHub](https://registry.hub.docker.com/u/phundament/app/).
@@ -21,8 +21,7 @@ Available on [DockerHub](https://registry.hub.docker.com/u/phundament/app/).
 Setup
 -----
 
-Create a MySQL container for the application data and a reverse proxy for easy access...
-...
+First, create a MySQL container for the application data and a reverse proxy for easy access...
 
 ```
 docker run -d \
@@ -40,25 +39,25 @@ docker run -d \
     jwilder/nginx-proxy
 ```
 
-Run the application in a PHP container...
+Run the application...
 
 ```
 docker run \
-    -d
-    --name=phundament \
+    --detach \
+    --name=myapp \
     --link mysql1:DB \
-    -p 8000 \
-    -e HOME=/root \
-    -e VIRTUAL_HOST=phundament.127.0.0.1.xip.io,phundament.192.168.59.103.xip.io \
-    phundament/docker
+    -p 80 \
+    -e VIRTUAL_HOST=myapp.127.0.0.1.xip.io,myapp.192.168.59.103.xip.io \
+    phundament/app
 ```
 
-> Check with `docker ps` which ports docker has mapped for the container or add a port mapping `-p 8000:8000` to your commmand.
+> Check with `docker ps` which ports docker has mapped for the container or 
+> add a port mapping `-p 8000:8000` to your commmand.
 
 Setup database...
 
 ```
-docker exec phundament ./yii app/setup --interactive=0
+docker exec myapp ./yii app/setup --interactive=0
 ```
 
 
@@ -81,8 +80,8 @@ Access the applications through wildcard DNS and virtual hosts...
 
 *Backend-App*
 
-- [myapp.127.0.0.1.xip.io/backend](http://myapp.127.0.0.1.xip.io/backend) (Linux)
-- [myapp.192.168.59.103.xip.io/backend](http://myapp.192.168.59.103.xip.io/backend) (OS X, Windows) 
+- [myapp.127.0.0.1.xip.io/backend](http://myapp.127.0.0.1.xip.io/admin) (Linux)
+- [myapp.192.168.59.103.xip.io/backend](http://myapp.192.168.59.103.xip.io/admin) (OS X, Windows) 
 
 
 Start/stop application...
@@ -104,8 +103,8 @@ Getting the source code from the image by mounting a `myapp` directory into the 
     docker run \
         -v `pwd`/$MYAPP:/app-install \
         -e HOME=/root \
-        phundament/docker \
-        cp -r /app/. /app-install && echo "Application created in $MYAPP"
+        phundament/app \
+        cp -r /app/. /app-install
     
     cd $MYAPP
 
@@ -129,7 +128,7 @@ docker run \
     $MYAPP
 ```
 
- Check if it is up with `docker ps`, your output should look similar to:
+Check if it is up with `docker ps`, your output should look similar to:
 
 ```
 Kraftbuch:TESTING tobias$ docker ps
@@ -168,35 +167,37 @@ docker start mysql1
 
 Run app...
 
-``` 
-docker -D run --link mysql1:DB \
-    -p 80 -p 81 \
-    -e VIRTUAL_HOST=prod.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=prod \
+```
+export APP=myapp
+```
+
+Production (interactive)
+
+```
+docker -D run -it \
+    -p 80 \
+    --name $APP \
+    -e APP_NAME=$APP \
     -e YII_ENV=prod \
-    -e YII_DEBUG=0 \
-    -e APP_NAME=production \
+    -e YII_DEBUG=1 \
+    -e DB_ENV_MYSQL_DATABASE=$APP \
+    --link mysql1:DB \
     phundament/app:production
-
-docker -D run  --link mysql1:DB \
-    -p 80 -p 81 \
-    -e VIRTUAL_HOST=dev.192.168.59.103.xip.io \
-    -e DB_ENV_MYSQL_DATABASE=development \
-    -e APP_NAME=dev4 phundament/app:development
-
-docker -D run  --link mysql1:DB \
-    -p 80 -p 81 \
-    -e VIRTUAL_HOST=test.192.168.59.103.xip.io \
-    -e YII_ENV=test \
-    -e DB_ENV_MYSQL_DATABASE=test \
-    -e APP_NAME=test phundament/app:testing
 ```
 
-Push to Docker Hub
+Development (interactive)
 
 ```
-#docker push phundament/app
+docker -D run -it \
+    -p 80 \
+    --name $APP \
+    -e APP_NAME=$APP \
+    -e DB_ENV_MYSQL_DATABASE=$APP \
+    --link mysql1:DB \
+    phundament/app:development
 ```
+
+Use replace `-it` with `-d` for detached containers.
 
 ---
 
