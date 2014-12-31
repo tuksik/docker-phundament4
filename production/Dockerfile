@@ -51,7 +51,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 ENV YII_ENV prod
 ENV YII_DEBUG 0
-ENV IMAGE_PRODUCTION_CREATE_PROJECT 2014-12-31-15-25-00
+ENV IMAGE_PRODUCTION_CREATE_PROJECT 2014-12-31-17-40-00
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
@@ -84,5 +84,5 @@ EXPOSE 80
 ## Install application packages on image build when used as a base-image
 #ADD ./composer.lock /app/composer.lock
 #ADD ./composer.json /app/composer.json
-#RUN /usr/local/bin/composer install --prefer-dist
+#RUN /usr/local/bin/composer install --prefer-dist --no-dev
 #ADD . /app

@@ -17,7 +17,7 @@ ENV TERM linux
 # Install application development packages
 ENV YII_ENV dev
 ENV YII_DEBUG true
-RUN /usr/local/bin/composer install --prefer-dist
+RUN /usr/local/bin/composer install --prefer-dist --dev
 
 # /!\ DEVELOPMENT ONLY SETTINGS /!\
 # Running PHP-FPM as root, required for volumes mounted from host
@@ -34,6 +34,6 @@ RUN sed -i.bak 's/user = www-data/user = root/' /etc/php5/fpm/pool.d/www.conf &&
 ## Install application packages on image build when used as a base-image
 #ADD ./composer.lock /app/composer.lock
 #ADD ./composer.json /app/composer.json
-#RUN /usr/local/bin/composer install --prefer-dist
+#RUN /usr/local/bin/composer install --prefer-dist --dev
 #ADD . /app
 
