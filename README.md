@@ -1,9 +1,8 @@
-Docker Container for Phundament 4
+Docker container for Phundament 4
 =================================
 
 **12factor PHP Application Template for Yii 2.0**
 
-*Container Version 0.1.0-dev*
 
 Yii 2 Application environment based on Debian Wheezy.
 
@@ -11,9 +10,9 @@ Yii 2 Application environment based on Debian Wheezy.
 Tags
 ----
 
-- `docker/phundament:production` minimal installation without development pacakges
-- `docker/phundament:development`, `:latest` default installation with development pacakges
-- `docker/phundament:testing` testing installation with additional pacakges
+- `phundament/app:production` minimal installation without development pacakges
+- `phundament/app:development`, `:latest` default installation with development pacakges
+- `phundament/app:testing` testing installation with additional pacakges
 
 Available on [DockerHub](https://registry.hub.docker.com/u/phundament/app/).
 
@@ -39,32 +38,32 @@ docker run -d \
     jwilder/nginx-proxy
 ```
 
+Pick a name for your new application, this is just for convenience to be able to copy & paste the commands below. 
+
+```
+export APP_NAME=myapp
+```
+
 Run the application...
 
 ```
 docker run \
     --detach \
-    --name=myapp \
+    --name=$APP_NAME \
     --link mysql1:DB \
-    -p 80 \
-    -e VIRTUAL_HOST=myapp.127.0.0.1.xip.io,myapp.192.168.59.103.xip.io \
+    --publish 80 \
+    --env VIRTUAL_HOST=myapp.127.0.0.1.xip.io,myapp.192.168.59.103.xip.io \
+    --env APP_PRETTY_URLS=1 \
     phundament/app
 ```
 
 > Check with `docker ps` which ports docker has mapped for the container or 
-> add a port mapping `-p 8000:8000` to your commmand.
-
-Setup database...
-
-```
-docker exec myapp ./yii app/setup --interactive=0
-```
-
+> add a port mapping `-p 8080:80` to your commmand.
 
 View logs of running application...
 
 ```
-docker logs --follow myapp
+docker logs --follow $APP_NAME
 ``` 
 
 
@@ -80,70 +79,19 @@ Access the applications through wildcard DNS and virtual hosts...
 
 *Backend-App*
 
-- [myapp.127.0.0.1.xip.io/backend](http://myapp.127.0.0.1.xip.io/admin) (Linux)
-- [myapp.192.168.59.103.xip.io/backend](http://myapp.192.168.59.103.xip.io/admin) (OS X, Windows) 
+- [myapp.127.0.0.1.xip.io/admin](http://myapp.127.0.0.1.xip.io/admin) (Linux)
+- [myapp.192.168.59.103.xip.io/admin](http://myapp.192.168.59.103.xip.io/admin) (OS X, Windows) 
 
 
 Start/stop application...
 
 ```
-docker start myapp
-docker stop myapp
+docker start $APP_NAME
+docker stop $APP_NAME
 ```
-
-
-
-Application Development
------------------------
-
-Getting the source code from the image by mounting a `myapp` directory into the container and copying the app into it...
-
-    export MYAPP=myapp
-
-    docker run \
-        -v `pwd`/$MYAPP:/app-install \
-        -e HOME=/root \
-        phundament/app \
-        cp -r /app/. /app-install
-    
-    cd $MYAPP
-
-Setup application...
-
-    echo "FROM phundament/docker" >> Dockerfile
-
-Build an run the container with a linked MySQL instance (see above)... 
-
-```
-docker build -t $MYAPP .
-
-docker run \
-    --detach=true \
-    --name=$MYAPP \
-    --link mysql1:DB \
-    -p 80 \
-    -e DB_ENV_MYSQL_DATABASE=$MYAPP \
-    -e VIRTUAL_HOST=$MYAPP.127.0.0.1.xip.io,$MYAPP.192.168.59.103.xip.io \
-    $MYAPP
-```
-
-Check if it is up with `docker ps`, your output should look similar to:
-
-```
-Kraftbuch:TESTING tobias$ docker ps
-CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
-c197783f13b5        myapp:latest        "php -S 0.0.0.0:8000   8 seconds ago       Up 7 seconds        0.0.0.0:49165->8000/tcp   myapp
-```
-
-Setup the database...
-
-```
-docker exec $MYAPP ./yii app/setup --interactive=0
-```
-
-Access the application, eg. under `http://192.168.59.103:49165` or via the reverse proxy `open http://$MYAPP.192.168.59.103.xip.io`. 
 
 > For more details about Phundament application development see also [phundament.com/docs](http://phundament.com/docs).
+
 
 Building the images
 -------------------
@@ -168,7 +116,7 @@ docker start mysql1
 Run app...
 
 ```
-export APP=myapp
+export APP_NAME=myapp
 ```
 
 Production (interactive)
@@ -176,11 +124,11 @@ Production (interactive)
 ```
 docker -D run -it \
     -p 80 \
-    --name $APP \
-    -e APP_NAME=$APP \
+    --name $APP_NAME \
+    -e APP_NAME=$APP_NAME \
     -e YII_ENV=prod \
     -e YII_DEBUG=1 \
-    -e DB_ENV_MYSQL_DATABASE=$APP \
+    -e DB_ENV_MYSQL_DATABASE=$APP_NAME \
     --link mysql1:DB \
     phundament/app:production
 ```
@@ -197,11 +145,7 @@ docker -D run -it \
     phundament/app:development
 ```
 
-Use replace `-it` with `-d` for detached containers.
-
----
+> Note: Replace `-it` with `-d` for detached containers.
 
 
-See [phundament.com](http://phundament.com) for details.
-
-
+ 
