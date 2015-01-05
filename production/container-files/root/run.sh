@@ -16,7 +16,7 @@ for _curVar in `env | awk -F = '{print $1}'`;do
 done
 
 # wait for mysql
-while ! curl http://$DB_PORT_3306_TCP_ADDR:3306/
+while ! curl http://$DB_PORT_3306_TCP_ADDR:$DB_PORT_3306_TCP_PORT/
 do
   echo "$(date) - still trying"
   sleep 1
