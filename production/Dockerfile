@@ -17,7 +17,7 @@ RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
 # Update and install system base packages
-ENV IMAGE_PRODUCTION_APT_GET_DATE 2014-12-10-00-36-00
+ENV IMAGE_PRODUCTION_APT_GET_DATE 2015-01-04-01-56
 RUN apt-get update && \
     apt-get upgrade && \
     apt-get install -y \
@@ -25,6 +25,7 @@ RUN apt-get update && \
         mercurial \ 
         curl \
         nginx \
+        mysql-client \
         php5-fpm \
         php5-curl \
         php5-cli \
@@ -43,7 +44,7 @@ ADD container-files/root/.composer/config.json /root/.composer/config.json
 
 # Install composer && global asset plugin (Yii 2.0 requirement)
 ENV COMPOSER_HOME /root/.composer
-ENV PATH /root/.composer/bin:$PATH
+ENV PATH /root/.composer/vendor/bin:$PATH
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.0.0-alpha9 && \
     /usr/local/bin/composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
 
@@ -51,7 +52,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 ENV YII_ENV prod
 ENV YII_DEBUG 0
-ENV IMAGE_PRODUCTION_CREATE_PROJECT 2014-12-31-17-40-00
+ENV IMAGE_PRODUCTION_CREATE_PROJECT 2015-01-04-01-00
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app

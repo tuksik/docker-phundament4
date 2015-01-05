@@ -10,9 +10,11 @@ Yii 2 Application environment based on Debian Wheezy.
 Tags
 ----
 
-- `phundament/app:production` minimal installation without development pacakges
-- `phundament/app:development`, `:latest` default installation with development pacakges
-- `phundament/app:testing` testing installation with additional pacakges
+- `phundament/app:latest` default installation with development pacakges (stable)
+- `phundament/app:4.0-production` minimal installation (stable)
+- `phundament/app:4.0-development` default installation with development pacakges (stable)
+- `phundament/app:production` minimal installation (unstable)
+- `phundament/app:development` default installation with development pacakges (unstable)
 
 Available on [DockerHub](https://registry.hub.docker.com/u/phundament/app/).
 

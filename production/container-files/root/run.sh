@@ -15,6 +15,14 @@ for _curVar in `env | awk -F = '{print $1}'`;do
     setEnvironmentVariable ${_curVar} ${!_curVar}
 done
 
+# wait for mysql
+while ! curl http://$DB_PORT_3306_TCP_ADDR:3306/
+do
+  echo "$(date) - still trying"
+  sleep 1
+done
+echo "$(date) - connected successfully"
+
 # create database in MySQL server, if not exists
 /usr/bin/php -f /root/create-db.php
 
@@ -34,7 +42,6 @@ chmod -R 777 /app/runtime /app/web/assets
 ./yii app/setup --interactive=0
 
 tail -F /var/log/nginx/error.log \
-     -F /var/log/nginx/access.log \
      -F /app/runtime/logs/web.log \
      -F -n 1000 /app/runtime/logs/console.log
-
+# note: nginx access log: -F /var/log/nginx/access.log \
