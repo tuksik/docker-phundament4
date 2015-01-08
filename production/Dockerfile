@@ -65,6 +65,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
 
 
 # Start application
+ENV APP_ENABLE_AUTOMIGRATIONS=1
 ADD container-files/root/create-db.php /root/create-db.php
 ADD container-files/root/run.sh /root/run.sh
 RUN cp .env-dist .env && \

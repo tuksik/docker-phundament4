@@ -38,8 +38,10 @@ touch /var/log/nginx/access.log \
       /app/runtime/logs/console.log
 chmod -R 777 /app/runtime /app/web/assets
 
-# create schema
-./yii app/setup --interactive=0
+# create schema, disable with APP_ENABLE_AUTOMIGRATIONS=0
+if [ "$APP_ENABLE_AUTOMIGRATIONS" != 0 ] ; then
+  ./yii app/setup --interactive=0
+fi
 
 tail -F /var/log/nginx/error.log \
      -F /app/runtime/logs/web.log \
