@@ -17,7 +17,7 @@ RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
 # Update and install system base packages
-ENV IMAGE_PRODUCTION_APT_GET_DATE 2015-01-04-01-56
+ENV IMAGE_PRODUCTION_APT_GET_DATE 2015-01-07-22-44
 RUN apt-get update && \
     apt-get upgrade && \
     apt-get install -y \
@@ -52,7 +52,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 ENV YII_ENV prod
 ENV YII_DEBUG 0
-ENV IMAGE_PRODUCTION_CREATE_PROJECT 2015-01-05-16-11
+ENV IMAGE_PRODUCTION_CREATE_PROJECT 2015-01-07-22-41
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
