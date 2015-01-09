@@ -52,7 +52,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Phundament 4 and its extensions can be used directly from the image or serve as local cache
 ENV YII_ENV prod
 ENV YII_DEBUG 0
-ENV IMAGE_PRODUCTION_CREATE_PROJECT 2015-01-07-22-41
+ENV IMAGE_PRODUCTION_CREATE_PROJECT 2015-01-09-17-10
 RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
     phundament/app:dev-master \
     /app
@@ -61,8 +61,12 @@ RUN /usr/local/bin/composer create-project --no-dev --prefer-dist \
 ADD container-files/etc/nginx/sites-available/default /etc/nginx/sites-available/default
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
     echo "cgi.fix_pathinfo = 0;" >> /etc/php5/fpm/php.ini && \
-    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini
-
+    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php5/fpm/php.ini && \
+    sed -i.bak '/;catch_workers_output = yes/ccatch_workers_output = yes' /etc/php5/fpm/pool.d/www.conf && \
+    sed -i.bak 's/log_errors_max_len = 1024/log_errors_max_len = 65536/' /etc/php5/fpm/php.ini
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
 
 # Start application
 ENV APP_ENABLE_AUTOMIGRATIONS=1
@@ -70,6 +74,7 @@ ADD container-files/root/create-db.php /root/create-db.php
 ADD container-files/root/run.sh /root/run.sh
 RUN cp .env-dist .env && \
     chmod 700 /root/run.sh
+
 
 CMD ["/root/run.sh"]
 EXPOSE 80
